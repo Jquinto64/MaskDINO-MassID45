@@ -12,6 +12,7 @@ from detectron2.data import MetadataCatalog
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.video_visualizer import VideoVisualizer
 from detectron2.utils.visualizer import ColorMode, Visualizer
+from detectron2.structures import Instances
 
 
 class VisualizationDemo(object):
@@ -62,7 +63,19 @@ class VisualizationDemo(object):
                 )
             if "instances" in predictions:
                 instances = predictions["instances"].to(self.cpu_device)
-                vis_output = visualizer.draw_instance_predictions(predictions=instances)
+                instances_ = Instances(instances.image_size)# <class 'detectron2.structures.instances.Instances'>
+                flag = False
+                for index in range(len(instances)):
+                    # print(instances[index].scores)
+                    score = instances[index].scores[0]
+                    if score > 0.5: # confidence score
+                        if flag == False:
+                            instances_ = instances[index]
+                            flag = True
+                        else:
+                            instances_ = Instances.cat([instances_, instances[index]])
+                
+                vis_output = visualizer.draw_instance_predictions(predictions=instances_)
 
         return predictions, vis_output
 

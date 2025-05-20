@@ -8,6 +8,9 @@ inference_test_output
 *.json
 *.diff
 *.jpg
+*.pdf
+*.save
+*.pth
 !/projects/DensePose/doc/images/*.jpg
 
 # compilation and distribution
@@ -29,9 +32,9 @@ wheels/
 *.ts
 model_ts*.txt
 
-# ipython/jupyter notebooks
-*.ipynb
-**/.ipynb_checkpoints/
+# # ipython/jupyter notebooks
+# *.ipynb
+# **/.ipynb_checkpoints/
 
 # Editor temporaries
 *.swn
@@ -46,8 +49,18 @@ _darcs
 
 # project dirs
 /detectron2/model_zoo/configs
+/copy_paste_aug_detectron2
+/PR_curves_no_SR
+/PR_curves_SR
+/runs
+/sample_dataloaders
+/slogs
 /datasets/*
 !/datasets/*.*
 /projects/*/datasets
 /models
 /snippet
+/archived_scripts
+output_*/
+
+

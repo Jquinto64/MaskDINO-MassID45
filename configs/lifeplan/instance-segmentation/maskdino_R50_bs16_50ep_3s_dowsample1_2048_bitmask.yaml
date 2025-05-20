@@ -46,7 +46,7 @@ MODEL:
     TWO_STAGE: True
     DN: "seg"
     DN_NUM: 100
-    INITIALIZE_BOX_TYPE: 'mask2box'
+    INITIALIZE_BOX_TYPE: 'bitmask'
     TEST:
       SEMANTIC_ON: False
       INSTANCE_ON: True
