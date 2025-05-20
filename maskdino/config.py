@@ -145,4 +145,23 @@ def add_maskdino_config(cfg):
     cfg.MODEL.SWIN.OUT_FEATURES = ["res2", "res3", "res4", "res5"]
     cfg.MODEL.SWIN.USE_CHECKPOINT = False
 
+    cfg.MODEL.EVA = CN()
+    cfg.MODEL.EVA.IMG_SIZE = 1024
+    cfg.MODEL.EVA.PATCH_SIZE = 16
+    cfg.MODEL.EVA.EMBED_DIM = 768
+    cfg.MODEL.EVA.DEPTH = 12
+    cfg.MODEL.EVA.NUM_HEADS = 12
+    cfg.MODEL.EVA.MLP_RATIO = 2.6667 
+    cfg.MODEL.EVA.QKV_BIAS = True
+    cfg.MODEL.EVA.DROP_PATH_RATE = 0.0
+    cfg.MODEL.EVA.ROPE = True
+    cfg.MODEL.EVA.WINDOW_SIZE = 0
+    cfg.MODEL.EVA.WINDOW_BLOCK_INDEXES = ()
+    cfg.MODEL.EVA.RESIDUAL_BLOCK_INDEXES = ()
+    cfg.MODEL.EVA.XATTN = True
+    cfg.MODEL.EVA.OUT_CHANNELS = 256
+    # cfg.MODEL.EVA.NORM = ""
+    cfg.MODEL.EVA.USE_ACT_CHECKPOINT = True
+    cfg.MODEL.EVA.OUT_FEATURES = ["res2", "res3", "res4", "res5"]
+
     cfg.Default_loading=True  # a bug in my d2. resume use this; if first time ResNet load, set it false

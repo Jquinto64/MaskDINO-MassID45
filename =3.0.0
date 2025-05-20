@@ -1,0 +1,24 @@
+Collecting mmdet
+  Downloading mmdet-3.3.0-py3-none-any.whl.metadata (29 kB)
+Requirement already satisfied: matplotlib in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (3.7.4)
+Requirement already satisfied: numpy in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (1.23.1)
+Requirement already satisfied: pycocotools in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (2.0.7)
+Requirement already satisfied: scipy in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (1.10.1)
+Requirement already satisfied: shapely in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (2.0.2)
+Requirement already satisfied: six in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (1.16.0)
+Requirement already satisfied: terminaltables in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (3.1.10)
+Requirement already satisfied: tqdm in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from mmdet) (4.66.2)
+Requirement already satisfied: contourpy>=1.0.1 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (1.1.1)
+Requirement already satisfied: cycler>=0.10 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (4.48.1)
+Requirement already satisfied: kiwisolver>=1.0.1 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (1.4.5)
+Requirement already satisfied: packaging>=20.0 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (23.2)
+Requirement already satisfied: pillow>=6.2.0 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (9.5.0)
+Requirement already satisfied: pyparsing>=2.3.1 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (3.1.1)
+Requirement already satisfied: python-dateutil>=2.7 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (2.8.2)
+Requirement already satisfied: importlib-resources>=3.2.0 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from matplotlib->mmdet) (6.1.1)
+Requirement already satisfied: zipp>=3.1.0 in /fs01/home/jquinto/miniconda/envs/md3/lib/python3.8/site-packages (from importlib-resources>=3.2.0->matplotlib->mmdet) (3.17.0)
+Downloading mmdet-3.3.0-py3-none-any.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 36.9 MB/s eta 0:00:00
+Installing collected packages: mmdet
+Successfully installed mmdet-3.3.0

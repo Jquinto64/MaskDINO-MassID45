@@ -26,7 +26,9 @@ import torch
 import detectron2.utils.comm as comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog, build_detection_train_loader
+from detectron2.data import MetadataCatalog, build_detection_train_loader, build_detection_test_loader
+from detectron2.data.dataset_mapper import DatasetMapper
+import detectron2.data.transforms as T
 
 from detectron2.evaluation import (
     CityscapesInstanceEvaluator,
@@ -218,6 +220,7 @@ class Trainer(DefaultTrainer):
             mapper = None
             return build_detection_train_loader(cfg, mapper=mapper)
 
+
     @classmethod
     def build_lr_scheduler(cls, cfg, optimizer):
         """
@@ -323,12 +326,41 @@ class Trainer(DefaultTrainer):
         res = OrderedDict({k + "_TTA": v for k, v in res.items()})
         return res
 
+from detectron2.data.datasets import register_coco_instances
+
+def register_custom_coco_dataset(args) -> None:
+   dataset_path = args.dataset_path
+   exp_id = args.exp_id
+   annotations_path = os.path.join(dataset_path, "annotations/")
+   register_coco_instances(
+       f"lifeplan_{exp_id}_train",
+       {},
+       os.path.join(annotations_path, "instances_train2017.json"),
+       os.path.join(dataset_path, "train2017"),
+   )
+   if args.eval_only:
+    register_coco_instances(
+        f"lifeplan_{exp_id}_test",
+        {},
+       os.path.join(annotations_path, "instances_test2017.json"),
+       os.path.join(dataset_path, "test2017"), ## NOTE: we generally do not want to test on the tiled test set
+    )
+   else: 
+    register_coco_instances(
+        f"lifeplan_{exp_id}_valid",
+        {},
+        os.path.join(annotations_path, "instances_val2017.json"),
+        os.path.join(dataset_path, "val2017"),
+    )
 
 def setup(args):
     """
     Create configs and perform basic setups.
     """
+    register_custom_coco_dataset(args)
     cfg = get_cfg()
+    cfg.DATASETS.TRAIN = (f"lifeplan_{args.exp_id}_train",)
+    cfg.DATASETS.TEST = (f"lifeplan_{args.exp_id}_valid",)
     # for poly lr schedule
     add_deeplab_config(cfg)
     add_maskdino_config(cfg)
@@ -360,6 +392,9 @@ def main(args):
         return res
 
     trainer = Trainer(cfg)
+    # if args.continue_training is True:
+    #     trainer.resume_or_load(cfg.MODEL.WEIGHTS)
+    # else:
     trainer.resume_or_load(resume=args.resume)
     return trainer.train()
 
@@ -368,6 +403,19 @@ if __name__ == "__main__":
     parser = default_argument_parser()
     parser.add_argument('--eval_only', action='store_true')
     parser.add_argument('--EVAL_FLAG', type=int, default=1)
+    # parser.add_argument('--continue_training', action='store_true')
+    parser.add_argument(
+        '--dataset_path', 
+        type=str, 
+        default="/h/jquinto/MaskDINO/datasets/lifeplan/",
+        help="Path to the dataset directory containing annotations and images"
+    )
+    parser.add_argument(
+        '--exp_id', 
+        # type=int, 
+        # default=256,
+        help="Identifier string -- tile size for training model if no SR is applied, or SR method if SR is applied; must be updated in argument cfg.DATASETS.TRAIN as well"
+    )
     args = parser.parse_args()
     # random port
     port = random.randint(1000, 20000)

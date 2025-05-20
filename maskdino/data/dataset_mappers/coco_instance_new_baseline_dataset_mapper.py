@@ -13,9 +13,10 @@ from detectron2.config import configurable
 from detectron2.data import detection_utils as utils
 from detectron2.data import transforms as T
 from detectron2.data.transforms import TransformGen
-from detectron2.structures import BitMasks, Instances, PolygonMasks
+from detectron2.structures import BitMasks, Instances, PolygonMasks, BoxMode
 
 from pycocotools import mask as coco_mask
+from PIL import Image
 
 __all__ = ["COCOInstanceNewBaselineDatasetMapper"]
 
@@ -36,7 +37,6 @@ def convert_coco_poly_to_mask(segmentations, height, width):
         masks = torch.zeros((0, height, width), dtype=torch.uint8)
     return masks
 
-
 def build_transform_gen(cfg, is_train):
     """
     Create a list of default :class:`Augmentation` from config.
@@ -46,26 +46,66 @@ def build_transform_gen(cfg, is_train):
     """
     assert is_train, "Only support training augmentation"
     image_size = cfg.INPUT.IMAGE_SIZE
-    min_scale = cfg.INPUT.MIN_SCALE
-    max_scale = cfg.INPUT.MAX_SCALE
+    # min_scale = cfg.INPUT.MIN_SCALE
+    # max_scale = cfg.INPUT.MAX_SCALE
 
     augmentation = []
+    
+    # # ORIGINAL SCHEME (COMMENT OUT)
+    # if cfg.INPUT.RANDOM_FLIP != "none":
+    #     augmentation.append(
+    #         T.RandomFlip(
+    #             horizontal=cfg.INPUT.RANDOM_FLIP == "horizontal",
+    #             vertical=cfg.INPUT.RANDOM_FLIP == "vertical",
+    #         )
+    #     )
+
+    # augmentation.extend([
+    #     T.ResizeScale(
+    #         min_scale=min_scale, max_scale=max_scale, target_height=image_size, target_width=image_size
+    #     ),
+    #     T.FixedSizeCrop(crop_size=(image_size, image_size)),
+    # ])
+
+    # OUR SCHEME
+    # augmentation.extend([
+    #     T.RandomCrop(
+    #         crop_type='absolute', 
+    #         crop_size=(1024, 1024)
+    #     )]
+    # )
 
     if cfg.INPUT.RANDOM_FLIP != "none":
-        augmentation.append(
+        augmentation.extend([
             T.RandomFlip(
-                horizontal=cfg.INPUT.RANDOM_FLIP == "horizontal",
+                horizontal=cfg.INPUT.RANDOM_FLIP == "horizontal", # horizontal by default
                 vertical=cfg.INPUT.RANDOM_FLIP == "vertical",
             )
-        )
-
+        ])
     augmentation.extend([
-        T.ResizeScale(
-            min_scale=min_scale, max_scale=max_scale, target_height=image_size, target_width=image_size
-        ),
-        T.FixedSizeCrop(crop_size=(image_size, image_size)),
+        T.RandomRotation(angle=[0, 90, 180, 270], sample_style = 'choice') # Revised our angles
     ])
 
+    """
+    RandomBrightness: (0.85, 1.15)
+    RandomContrast: (0.9, 1.1)
+    RandomSaturation: (0.85, 1.15)
+    """ 
+    augmentation.extend([
+        T.RandomBrightness(intensity_min=0.85, intensity_max=1.15),
+        T.RandomContrast(intensity_min=0.9, intensity_max=1.1),
+        T.RandomSaturation(intensity_min=0.85, intensity_max=1.15)
+    ])
+
+    augmentation.extend([
+        # WITH SMALLER TILES - SAHI: NO SR
+        T.ResizeShortestEdge(
+            short_edge_length=(image_size, image_size), 
+            max_size = image_size, 
+            sample_style = 'choice', 
+            interp = Image.BILINEAR # Use DEFAULT = BILNEAR (BASELINE RESIZING METHOD)
+        ),
+    ])
     return augmentation
 
 

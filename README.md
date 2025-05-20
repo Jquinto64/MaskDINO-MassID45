@@ -67,9 +67,28 @@ Framework for Object Detection and Segmentation](https://arxiv.org/abs/2206.0277
 
 See [installation instructions](INSTALL.md).
 
+## MassID45 Instructions
+1. First download the MS-COCO pretrained R50 checkpoint using
+```bash
+wget https://github.com/IDEA-Research/detrex-storage/releases/download/maskdino-v0.1.0/maskdino_r50_50ep_300q_hid2048_3sd1_instance_maskenhanced_mask46.3ap_box51.7ap.pth
+```
 
+2. Make any desired modifications to the data augmentations with `maskdino/data/dataset_mappers/coco_instance_new_baseline_dataset_mapper.py`, and modify the configs `configs/lifeplan/instance-segmentation/Base-Lifeplan-InstanceSegmentation.yaml` and `configs/lifeplan/instance-segmentation/maskdino_R50_bs16_50ep_3s_dowsample1_2048.yaml` as you see fit. 
+
+3. Modify the  `--dataset_path` and `MODEL.WEIGHTS` arguments in `train.sh` to reflect the locations of the MassID45 training data and pretrained model weights from Step 1. Then run the training script with 
+```bash
+sbatch train.sh
+```
+Outputs will be saved in the folder specified by `OUTPUT_DIR`.
+
+4.  Replace `--dataset_img_path` and `--dataset_json_path` in `sahi_inference_256_datasets_v2.sh` with the locations of the MassID45 validation or testing data, respectively, then run inference with: 
+```bash
+sbatch sahi_inference_256_datasets_v2.sh
+```
+Results will appear in the `runs/predict` folder under the name specified by the `--exp_name` argument.
 
 ## Getting Started
+
 See [Inference Demo with Pre-trained Model](demo/README.md)
 
 See [Results](#results).

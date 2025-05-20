@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     cfg = setup_cfg(args)
 
-    demo = VisualizationDemo(cfg)
+    demo = VisualizationDemo(cfg, parallel=True)
 
     if args.input:
         if len(args.input) == 1:
@@ -131,8 +131,10 @@ if __name__ == "__main__":
                     assert os.path.isdir(args.output), args.output
                     out_filename = os.path.join(args.output, os.path.basename(path))
                 else:
-                    assert len(args.input) == 1, "Please specify a directory with args.output"
-                    out_filename = args.output
+                    # assert len(args.input) == 1, "Please specify a directory with args.output"
+                    # out_filename = args.output
+                    os.mkdir(args.output)
+                    out_filename = os.path.join(args.output, os.path.basename(path))
                 visualized_output.save(out_filename)
             else:
                 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
