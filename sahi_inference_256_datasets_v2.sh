@@ -1,27 +1,24 @@
 #!/bin/bash
-#SBATCH -p rtx6000          # partition: should be gpu on MaRS, and a40, t4v1, t4v2, or rtx6000 on Vaughan (v)
-#SBATCH --gres=gpu:1    # request GPU(s)
-#SBATCH -c 8              # number of CPU cores
+#SBATCH --gres=gpu:l40s:1   # request GPU(s)
+#SBATCH --cpus-per-task=8   # number of CPU cores
 #SBATCH --mem=16G           # memory per node
 #SBATCH --array=0           # array value (for running multiple seeds, etc)
-#SBATCH --qos=m2
 #SBATCH --time=8:00:00
 #SBATCH --output=slogs/%x_%A-%a_%n-%t.out
                             # %x=job-name, %A=job ID, %a=array value, %n=node rank, %t=task rank, %N=hostname
                             # Note: You must manually create output directory "slogs" 
 #SBATCH --open-mode=append  # Use append mode otherwise preemption resets the checkpoint file
 #SBATCH --job-name=sahi_inference_512_sahi_tiled_v9_025_conf_final_R50_val_set_results_0.6_overlap_5_epochs_bs_8_lr_5e-5_one_cycle_colour_augs_15k_iters_reproduce
-#SBATCH --exclude=gpu177,gpu168
 
-source ~/.bashrc
-source activate maskdino
-module load cuda-11.3
-
-SEED="$SLURM_ARRAY_TASK_ID"
+ENV_NAME=maskdino
+module load StdEnv/2020 gcc/9.3.0
+module load python/3.10.2
+module load cuda/11.8.0
+module load opencv/4.8.0
+source /home/jquinto/projects/aip-gwtaylor/jquinto/virtualenvs/$ENV_NAME/bin/activate
 
 # Debugging outputs
 pwd
-which conda
 python --version
 pip freeze
 

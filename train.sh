@@ -1,34 +1,30 @@
 #!/bin/bash
-#SBATCH -p rtx6000          # partition: should be gpu on MaRS, and a40, t4v1, t4v2, or rtx6000 on Vaughan (v)
-#SBATCH --gres=gpu:4       # request GPU(s)
-#SBATCH -c 8             # number of CPU cores
+#SBATCH --gres=gpu:l40s:2   # request GPU(s)
+#SBATCH --cpus-per-task=8   # number of CPU cores
 #SBATCH --mem=20G           # memory per node
 #SBATCH --array=0           # array value (for running multiple seeds, etc)
-#SBATCH --qos=m
 #SBATCH --time=12:00:00
 #SBATCH --output=slogs/%x_%A-%a_%n-%t.out
                             # %x=job-name, %A=job ID, %a=array value, %n=node rank, %t=task rank, %N=hostname
                             # Note: You must manually create output directory "slogs" 
 #SBATCH --open-mode=append  # Use append mode otherwise preemption resets the checkpoint file
 #SBATCH --job-name=maskdino_lifeplan_2x_zoom_SR_swinir_bioscan_v9_R50_keep_cutoff_5_epochs_one_cycle_lr_5e-5_color_augs_15k_iters
-#SBATCH --exclude=gpu177,gpu132
 
-
-source ~/.bashrc
-source activate md3
-module load cuda-11.3
-
-SEED="$SLURM_ARRAY_TASK_ID"
+ENV_NAME=maskdino
+module load StdEnv/2020 gcc/9.3.0
+module load python/3.10.2
+module load cuda/11.8.0
+module load opencv/4.8.0
+source /home/jquinto/projects/aip-gwtaylor/jquinto/virtualenvs/$ENV_NAME/bin/activate
 
 # Debugging outputs
 pwd
-which conda
 python --version
 pip freeze
 
 # FOR SAHI DATASETS
 TILE_SIZE=512
-python train_net.py --num-gpus 4 \
+python train_net.py --num-gpus 2 \
 --resume \
 --exp_id ${TILE_SIZE} \
 --config-file /h/jquinto/MaskDINO/configs/lifeplan/instance-segmentation/maskdino_R50_bs16_50ep_3s_dowsample1_2048.yaml \
